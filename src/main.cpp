@@ -1,9 +1,6 @@
-//#include "appcommand.h"
-//#include "once.h"
-//#include "cluster.h"
 #include <dpp/dpp.h>
 
-const std::string BOT_TOKEN = "MTA3NjUzMzAzNjIyNjcxOTc0NQ.GnrpZ6.PIRFo8l6UaDfDW5nwppW7vNq4Mr9AJr0-q5NWA";
+const std::string BOT_TOKEN = "";
 
 int main() {
 	dpp::cluster bot(BOT_TOKEN);
