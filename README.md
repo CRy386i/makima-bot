@@ -21,5 +21,5 @@ find_library(DPP_LIBRARIES NAMES dpp "libdpp.a" HINTS ${WHERE_IS_INSTALL_DPP})
  
 include(FindPackageHandleStandardArgs)
  
-find_package_handle_standard_args(DPP DEFAULT_MSG DPP_LIBRARIES DPP_INCLUDE_DIR)
+find_package_handle_standard_args(DPP DEFAULT_MSG DPP_LIB DPP_INCLUDE)
 ```
