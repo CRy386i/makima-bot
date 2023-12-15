@@ -1,27 +1,62 @@
 cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 
-project(makima-bot VERSION 0.0.1 DESCRIPTION "A discord bot"
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+set(BOT_NAME "makima-bot")
+
+project(${BOT_NAME} VERSION 0.0.1 DESCRIPTION "A discord bot"
 	LANGUAGES CXX)
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-
-find_package(DPP REQUIRED)
-
-add_executable(${PROJECT_NAME}
+add_executable(${BOT_NAME}
 	src/main.cpp
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE
-	${DPP_LIB}
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
+set_target_properties(${BOT_NAME} PROPERTIES
+CXX_STANDARD 17
+CXX_STANDARD_REQUIRED ON
 )
 
-target_include_directories(${PROJECT_NAME} PRIVATE
-	${DPP_INCLUDE}
+set(THREADS_PREFER_PTHREAD_FLAG TRUE)
+find_package(Threads REQUIRED)
+find_package(DPP)
+
+target_include_directories(${BOT_NAME} PUBLIC
+	${OPENSSL_INCLUDE_DIR}
 )
 
-include_directories(${DPP_INCLUDE})
-
-set_target_properties(${PROJECT_NAME} PROPERTIES
-CXX_STANDART 17
-CXX_STANDART_REQUIRED ON
+target_link_libraries(${BOT_NAME}
+	dl
+	${CMAKE_THREAD_LIBS_INIT}
+	${OPENSSL_CRYPTO_LIBRARY}
+	${OPENSSL_SSL_LIBRARY}
 )
+
+if (DPP_FOUND)
+	target_link_libraries(${BOT_NAME} ${DPP_LIBRARY})
+	target_include_directories(${BOT_NAME} PUBLIC ${DPP_INCLUDE_DIR})
+else()
+	message(WARNING "Could not find DPP install. Building from source instead.")
+	option(DPP_BUILD_TEST "" OFF)
+	include(FetchContent)
+
+	FetchContent_Declare(
+			libdpp
+			GIT_REPOSITORY https://github.com/brainboxdotcc/DPP.git
+			GIT_TAG master
+	)
+
+	FetchContent_GetProperties(libdpp)
+	if(NOT libdpp_POPULATED)
+			FetchContent_Populate(libdpp)
+			target_include_directories(${BOT_NAME} PUBLIC
+				${libdpp_SOURCE_DIR}/include
+				)
+			add_subdirectory(
+				${libdpp_SOURCE_DIR}
+				${libdpp_BINARY_DIR}
+				EXCLUDE_FROM_ALL)
+	endif()
+
+	target_link_libraries(${BOT_NAME} dpp)
+endif()

@@ -1,10 +1,10 @@
-set(DPP_LIB WHERE_IS_INSTALL_DPP)
-set(DPP_INCLUDE WHERE_IS_INSTALL_DPP)
+find_path(DPP_INCLUDE_DIR NAMES dpp/dpp.h HINTS ${DPP_ROOT_DIR})
 
-find_path(DPP_INCLUDE NAMES dpp/dpp.h HINTS ${DPP_INCLUDE})
+find_library(DPP_LIBRARIES NAMES dpp "libdpp.a" HINTS ${DPP_ROOT_DIR})
 
-find_library(DPP_LIB NAMES dpp HINTS ${DPP_LIB})
+message(STATUS "DPP_INCLUDE_DIR: ${DPP_INCLUDE_DIR}")
+message(STATUS "DPP_LIBRARIES: ${DPP_LIBRARIES}")
 
 include(FindPackageHandleStandardArgs)
 
-find_package_handle_standard_args(DPP DEFAULT_MSG DPP_LIB DPP_INCLUDE)
+find_package_handle_standard_args(DPP DEFAULT_MSG DPP_LIBRARIES DPP_INCLUDE_DIR)
