@@ -20,6 +20,7 @@ CXX_STANDARD_REQUIRED ON
 set(THREADS_PREFER_PTHREAD_FLAG TRUE)
 find_package(Threads REQUIRED)
 find_package(DPP)
+find_package(OGGZ)
 
 target_include_directories(${BOT_NAME} PUBLIC
 	${OPENSSL_INCLUDE_DIR}
@@ -32,8 +33,8 @@ target_link_libraries(${BOT_NAME}
 	${OPENSSL_SSL_LIBRARY}
 )
 
-if (DPP_FOUND)
-	target_link_libraries(${BOT_NAME} ${DPP_LIBRARY})
+if(DPP_FOUND)
+	target_link_libraries(${BOT_NAME} ${DPP_LIBRARIES})
 	target_include_directories(${BOT_NAME} PUBLIC ${DPP_INCLUDE_DIR})
 else()
 	message(WARNING "Could not find DPP install. Building from source instead.")
@@ -59,4 +60,11 @@ else()
 	endif()
 
 	target_link_libraries(${BOT_NAME} dpp)
+endif()
+
+if(OGGZ_FOUND)
+	target_link_libraries(${BOT_NAME} ${OGGZ_LIBRARIES})
+	target_include_directories(${BOT_NAME} PUBLIC ${OGGZ_INCLUDE_DIR})
+else()
+	message(FATAL_ERORR "Could not find OGGZ install.")
 endif()
