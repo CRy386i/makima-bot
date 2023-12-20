@@ -6,10 +6,13 @@
 #include <string.h>
 #include <oggz/oggz.h>
 
-const std::string BOT_TOKEN = "";
+using json = nlohmann::json;
 
 int main() {
-	dpp::cluster bot(BOT_TOKEN);
+	json configdocument;
+	std::ifstream configfile("config.json");
+	configfile >> configdocument;
+	dpp::cluster bot(configdocument["token"]);
 	bot.on_log(dpp::utility::cout_logger());
 
 	bot.on_slashcommand([](const dpp::slashcommand_t& event) {
@@ -40,14 +43,19 @@ int main() {
 						dpp::voiceconn *voiceconn = (dpp::voiceconn *)user_data;
 						voiceconn->voiceclient->send_audio_opus(packet->op.packet,
 								packet->op.bytes);
+						// oggz specs requier return 0; this.
 						return 0;
 						},
+						// this will be the value of void *user_data
 						(void *)v
 				);
 				while (v && v->voiceclient && !v->voiceclient->terminating) {
+					/* you can tweak this to whatever. Here I use BUFSIZ, defined in
+					 stdio.h as 8192. */
 					static const constexpr long CHUNK_READ = BUFSIZ * 2;
 					const long read_bytes = oggz_read(track_og, CHUNK_READ);
 
+					// break on eof
 					if (!read_bytes) {
 						break;
 					}
