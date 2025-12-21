@@ -8,15 +8,9 @@ include(cmake/CPM.cmake)
 CPMAddPackage(
     NAME DPP
     GITHUB_REPOSITORY brainboxdotcc/DPP
+    OPTIONS "DPP_BUILD_TEST OFF"
     VERSION 10.1.3
 )
-
-if(DPP_ADDED)
-    # DPP has lack with question like "where's my headers?"
-    add_library(DPP INTERFACE)
-
-    target_include_directories(DPP SYSTEM INTERFACE ${DPP_SOURCE_DIR}/include)
-endif()
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED On)
@@ -26,7 +20,8 @@ add_executable(${PROJECT_NAME}
     src/main.cpp
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE DPP)
+target_link_libraries(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/${DPP_BINARY_DIR}/library/Debug/dpp.lib)
+target_include_directories(${PROJECT_NAME} PRIVATE ${DPP_SOURCE_DIR}/include)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
     CXX_STANDART 17
