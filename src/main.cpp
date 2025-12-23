@@ -4,6 +4,8 @@
 #include <fstream>
 #include <cstdlib>
 #include <dpp/dpp.h>
+#include <ogg/ogg.h>
+#include <opus/opus.h>
 
 int main(int argc, char **argv) {
     const char* env_p = nullptr;
